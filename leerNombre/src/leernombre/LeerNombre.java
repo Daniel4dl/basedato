@@ -5,11 +5,7 @@
  */
 package leernombre;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -32,30 +28,8 @@ public class LeerNombre {
         BufferedReader b = new BufferedReader(f);
         while ((cadena = b.readLine()) != null) {
             c++;
-
-            if (cadena.contains(" ")){
-
-                cadenas=cadena.split(" ");
-                total=new ArrayList();
-                for (String i:cadenas
-                     ) {
-                    if (i.length()>0){
-                        Pattern p = Pattern.compile("[a-zA-Z]*");
-                        Matcher m = p.matcher(i);
-                        Pattern l = Pattern.compile("[0-9.0-9]*");
-                        Matcher v = l.matcher(i);
-                        if (m.matches()|v.matches()){
-                            total.add(i);
-                        }else {
-                            Palabras(i);
-                        }
-                    }
-
-                }
-                palabras+=total.size();
-            }
-            
-
+            StringTokenizer st = new StringTokenizer(cadena);
+           palabras+=st.countTokens();
 
         }
 
@@ -63,28 +37,30 @@ public class LeerNombre {
         b.close();
 
     }
-    static void Palabras(String i){
-        if (i.contains("-")){
-           String cadena;
-           String cadenas[];
-           ArrayList totol=new ArrayList();
-           cadenas=i.split("-");
-            for (String j:cadenas
-                 ) {
-                Pattern p = Pattern.compile("[^/]*");
-                Matcher m = p.matcher(j);
-                if (m.matches()){
-            totol.add(j);
+
+    static void leerDirectorio(String directorio) throws IOException {
+        Queue<String> archivo = new LinkedList<>();
+        boolean file = true;
+        int a=0;
+
+        Stack<String> path = new Stack<>();
+        File f = new File(directorio);
+
+        if (file = f.exists()) {
+            File[] files = f.listFiles();
+            for (File i : files) {
+                if (i.isFile()) {
+
+                    leerArchivo(i.getAbsolutePath());
+                } else {
+                    path.add(i.getAbsolutePath());
+                    leerDirectorio(path.get(a));
+                    a++;
                 }
-                else{
-                    System.out.println(j);
-                }
+
             }
-            palabras+=totol.size();
         }
-
     }
-
     public static void main(String[] args) throws IOException {
 
         leerArchivo(args[0]);
